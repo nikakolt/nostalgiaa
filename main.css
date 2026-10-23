@@ -1,0 +1,371 @@
+:root { --heading: "Bitter-regular", serif; --body: "OpenSans-Light", sans-serif; --caption: "Bitter-SemiBold", serif; }
+* { box-sizing: border-box; }
+html { scroll-snap-type: y proximity; scroll-behavior: smooth; }
+body { margin: 0; background: #fff; color: #111; }
+figure, h1, h2, p { margin: 0; }
+.scene { height: 280vh; }
+.screen { position: sticky; top: 0; height: 100vh; overflow: hidden; isolation: isolate; background: #fff; }
+h1 { position: absolute; top: 3%; left: 3%; font: 400 3.2vw var(--heading); }
+.circle { position: fixed; top: 50%; left: 50%; width: 100vmax; height: 100vmax; object-fit: contain; transform: translate(-50%, -50%) scale(.2); transform-origin: center; z-index: 9; pointer-events: none; will-change: transform, opacity; }
+.frames { position: fixed; inset: 0; z-index: 10; pointer-events: none; }
+.frames img { position: absolute; top: var(--top, 50%); left: 50%; width: var(--size, 500px); height: var(--size, 500px); object-fit: contain; transform: translate(-50%, -50%); visibility: hidden; }
+.frames img.active { visibility: visible; }
+.nostalgia { position: relative; background: #fff; }
+.nostalgia-visual { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: flex-end; padding-right: 6%; pointer-events: none; }
+.nostalgia-gallery { position: relative; width: 38vw; height: 70vh; }
+.nostalgia-picture { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; opacity: 0; visibility: hidden; transition: opacity .6s ease, visibility .6s; }
+.nostalgia-picture.active { opacity: 1; visibility: visible; }
+.nostalgia-zoom { transform: scale(var(--zoom, 1)); transition: transform .6s cubic-bezier(.22,1,.36,1); }
+.nostalgia-picture img { display: block; width: 100%; height: 55vh; object-fit: contain; animation: breathe 5s ease-in-out infinite paused; }
+.nostalgia-picture.active img { animation-play-state: running; }
+.nostalgia-picture figcaption, .therapy-row figcaption { margin-top: 20px; font: clamp(11px,.9vw,16px)/1.4 var(--caption); text-align: center; text-wrap: balance; }
+.nostalgia-texts { position: relative; margin-top: -100vh; width: 48%; }
+.nostalgia-step { min-height: 100vh; display: flex; align-items: center; scroll-snap-align: start; scroll-snap-stop: always; }
+.nostalgia-copy { width: 94%; margin-left: 6.25%; padding: 40px 0; }
+.nostalgia-copy h2, .therapy-copy h2, .past-copy h2 { margin-bottom: 24px; font: 400 clamp(28px,3.4vw,64px)/1.15 var(--heading); }
+.nostalgia-copy p { font: clamp(15px,1.2vw,24px)/1.55 var(--body); }
+.question-screen, .effect-screen { min-height: 100vh; display: grid; place-items: center; background: #fff; scroll-snap-align: start; scroll-snap-stop: always; }
+.question-screen { padding: 5vw; }
+.question-text { max-width: 1000px; font: 400 clamp(36px,5.2vw,88px)/1.15 var(--heading); text-align: center; }
+.therapy { padding: 5vw; background: #fff; }
+.therapy-row { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6vw; }
+.therapy-row figure { min-width: 0; text-align: center; }
+.therapy-row img { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; animation: spin 45s linear infinite paused; }
+.therapy.is-visible .therapy-row img { animation-play-state: running; }
+.therapy-row figure:nth-child(2) img { animation-direction: reverse; animation-duration: 55s; }
+.therapy-row figure:nth-child(3) img { animation-duration: 65s; }
+.therapy-copy, .past-copy { width: 70%; scroll-snap-align: center; }
+.therapy-copy { margin: 6vw 0; }
+.therapy-copy p, .past-copy p { margin-bottom: 8px; font: clamp(15px,1.35vw,24px)/1.5 var(--body); }
+.past-section { padding: 6vw 5vw 8vw; background: #fff; }
+.video-screen { height: 100vh; height: 100svh; overflow: hidden; background: #000; scroll-snap-align: start; scroll-snap-stop: always; }
+.video-screen video { display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.memory-screen { min-height: 100vh; padding: 6vh 5vw; display: grid; place-items: center; background: #fff; scroll-snap-align: start; }
+.memory-cloud { position: relative; width: min(72vw,950px); aspect-ratio: 1; }
+.memory-item { position: absolute; left: calc(var(--x)*1%); top: calc(var(--y)*1%); width: calc(var(--w)*1%); transform: translate(-50%,-50%) translate(var(--dx,0px),var(--dy,0px)); transition: transform .55s cubic-bezier(.22,1,.36,1); text-align: center; cursor: pointer; }
+.memory-item img { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; transition: transform .55s cubic-bezier(.22,1,.36,1); }
+.memory-item figcaption { position: relative; margin-top: 10px; font: clamp(9px,.85vw,14px)/1.3 var(--caption); transition: transform .55s cubic-bezier(.22,1,.36,1); }
+.memory-item.is-active { z-index: 2; }
+.memory-item.is-active img { transform: scale(1.16); }
+.memory-item.is-active figcaption { transform: translateY(var(--caption-shift,0px)); }
+.memory-item:focus-visible { outline: 1px solid #777; outline-offset: 8px; }
+.effect-screen { padding: 8vh 8vw; }
+.effect-text, .final-message p { width: 100%; max-width: 1100px; margin: 0 auto; font: 400 clamp(26px,3.4vw,58px)/1.12 var(--heading); text-align: center; text-wrap: balance; }
+.final-screen { background: #fff; scroll-snap-align: start; overflow: clip; }
+.final-message { min-height: 65vh; padding: 9vh 10vw 30vh; }
+.final-message p { transform: translateY(30px); font-weight: 300; }
+.site-footer { position: relative; min-height: 38vh; padding: 0 3vw 24px; display: flex; align-items: flex-end; background: #242222; color: #fff; }
+.footer-figure { position: absolute; top: 0; left: 50%; width: min(30vw,400px); transform: translate(-50%,-65%); text-align: center; }
+.footer-figure img { display: block; width: 100%; height: auto; transform: translateY(125px) scale(1.45); }
+.footer-figure figcaption { margin-top: 16px; font: clamp(11px,.9vw,16px)/1.4 var(--caption); }
+.footer-bottom { display: flex; justify-content: space-between; gap: 24px; width: 100%; font: clamp(13px,1.2vw,20px)/1.4 var(--body); }
+.footer-code { white-space: pre; }
+@keyframes breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.025); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width:700px) {
+  .therapy { padding: 8vw 5vw; }
+  .therapy-row { gap: 4vw; }
+  .therapy-copy, .past-copy { width: 100%; }
+  .therapy-copy { margin: 12vw 0; }
+  .memory-cloud { width: 90vw; }
+  .final-message { padding: 8vh 6vw 22vh; }
+  .footer-figure { width: min(55vw,300px); }
+  .site-footer { min-height: 32vh; }
+}
+@media (prefers-reduced-motion:reduce) {
+  html { scroll-snap-type: none; scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+
+
+
+
+
+
+@media (max-width: 700px) {
+  html {
+    scroll-snap-type: none;
+    scroll-behavior: auto;
+  }
+
+  body {
+    overflow-x: clip;
+  }
+
+
+  .scene {
+    height: 280svh;
+  }
+
+  .screen,
+  .nostalgia-visual {
+    height: 100svh;
+  }
+
+  .h1 {
+    inset: 20px auto auto 6%;
+    margin: 0;
+    font-size: clamp(28px, 8vw, 42px);
+  }
+
+ 
+  .nostalgia-visual {
+    align-items: flex-start;
+    justify-content: center;
+    padding: 90px 6vw 0;
+  }
+
+  .nostalgia-gallery {
+    width: 100%;
+    height: 36svh;
+  }
+
+  .nostalgia-picture {
+    justify-content: flex-start;
+  }
+
+  .nostalgia-picture img {
+    height: 27svh;
+  }
+
+  .nostalgia-picture figcaption {
+    max-width: 340px;
+    margin: 12px auto 0;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .nostalgia-texts {
+    width: 100%;
+    margin-top: -100svh;
+  }
+
+  .nostalgia-step {
+    min-height: 110svh;
+    align-items: flex-start;
+    padding: 52svh 6vw 10svh;
+  }
+
+  .nostalgia-copy {
+    margin: 0;
+    padding: 0;
+  }
+
+  .nostalgia-copy,
+  .therapy-copy,
+  .past-copy {
+    width: 100%;
+  }
+
+
+  .nostalgia-copy h2,
+  .therapy-copy h2,
+  .past-copy h2 {
+    margin-bottom: 20px;
+    font-size: clamp(28px, 8vw, 38px);
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .nostalgia-copy p,
+  .therapy-copy p,
+  .past-copy p {
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .therapy-copy p,
+  .past-copy p {
+    margin-bottom: 14px;
+  }
+
+  .question-screen,
+  .effect-screen {
+    min-height: 100svh;
+    padding: 90px 6vw 60px;
+  }
+
+  .question-text {
+    width: 100%;
+    font-size: clamp(34px, 9vw, 54px);
+    line-height: 1.13;
+    text-wrap: balance;
+  }
+
+  .effect-text,
+  .final-message p {
+    font-size: clamp(25px, 6.5vw, 36px);
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+
+  .therapy {
+    padding: 60px 6vw;
+  }
+
+  .therapy-row {
+    gap: 4vw;
+    align-items: start;
+  }
+
+  .therapy-row figcaption {
+    margin-top: 12px;
+    font-size: 11px;
+  }
+
+  .therapy-copy {
+    margin: 50px 0;
+  }
+
+  .past-section {
+    padding: 30px 6vw 60px;
+  }
+
+
+  .video-screen {
+    height: 100svh;
+  }
+
+  .video-screen video {
+    object-position: center;
+  }
+
+
+  .memory-screen {
+    min-height: 85svh;
+    padding: 70px 5vw;
+  }
+
+  .memory-cloud {
+    width: 100%;
+    aspect-ratio: 0.85;
+  }
+
+  .memory-item figcaption {
+    margin-top: 7px;
+    font-size: 9px;
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+
+  .memory-item.is-active img {
+    transform: scale(1.12);
+  }
+
+
+  .final-message {
+    min-height: auto;
+    padding: 80px 6vw 170px;
+  }
+
+  .final-message p {
+    transform: none;
+  }
+
+  .site-footer {
+    min-height: 300px;
+    padding: 180px 6vw calc(28px + env(safe-area-inset-bottom));
+  }
+
+  .footer-figure {
+    width: min(58vw, 260px);
+    transform: translate(-50%, -45%);
+  }
+
+  .footer-figure img {
+    transform: translateY(15px) scale(1.1);
+  }
+
+  .footer-figure figcaption {
+    margin-top: 24px;
+    font-size: 12px;
+  }
+
+  .footer-bottom {
+    align-items: flex-end;
+    gap: 16px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 360px) {
+  .nostalgia-copy p,
+  .therapy-copy p,
+  .past-copy p {
+    font-size: 15px;
+  }
+
+  .memory-item figcaption {
+    font-size: 8px;
+  }
+
+  .footer-bottom {
+    font-size: 11px;
+  }
+}
+
+
+@media (max-width: 950px) and (max-height: 500px)
+  and (orientation: landscape) {
+  html {
+    scroll-snap-type: none;
+  }
+
+  .nostalgia-visual {
+    height: 100svh;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 5vw 0 0;
+  }
+
+  .nostalgia-gallery {
+    width: 40vw;
+    height: 65svh;
+  }
+
+  .nostalgia-picture img {
+    height: 45svh;
+  }
+
+  .nostalgia-texts {
+    width: 49%;
+    margin-top: -100svh;
+  }
+
+  .nostalgia-step {
+    min-height: 120svh;
+    align-items: center;
+    padding: 35px 4vw;
+  }
+
+  .nostalgia-copy {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nostalgia-copy h2 {
+    font-size: 26px;
+  }
+
+  .nostalgia-copy p {
+    font-size: 14px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
